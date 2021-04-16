@@ -6,11 +6,14 @@ class UsersCtl {
     }
     findById(ctx) {
         if (ctx.params.id * 1 >= db.length) {
-            ctx.throw(412, '先决条件失败：id 大于等于数组长度')
+            ctx.throw(412)
         }
         ctx.body = db[ctx.params.id * 1];
     }
     creat(ctx) {
+        ctx.verifyParams({
+            name: { type: 'string', require: true }
+        });
         db.push(ctx.request.body);
         ctx.body = ctx.request.body;
     }
