@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node app",
-    "dev": "nodemon app"
+    "dev": "nodemon app/index.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Logan9872/koa_project#readme",
   "dependencies": {
     "cross-env": "^7.0.3",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "koa-json-error": "^3.1.2",
