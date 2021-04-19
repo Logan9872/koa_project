@@ -1,4 +1,4 @@
-const jsonwebtoken = require('jsonwebtoken');
+const jwt = require('koa-jwt');
 const User = require('../models/user');
 const { secret } = require('../config');
 
@@ -18,13 +18,19 @@ class UsersCtl {
 
         });
         const { name } = ctx.request.body;
-        const repeatedUser = await User.findOne({ name }),
+        const repeatedUser = await User.findOne({ name });
         if (repeatedUser) {
             ctx.throw(409, '用户冲突');
         }
         const user = await new User(ctx.request.body).save();
         ctx.body = user;
     }
+
+    async checkOwner(ctx, next) {
+        if (ctx.params.id !== ctx.state.user._id) { ctx.throw(403, '没有权限') }
+        await next();
+    }
+
     async update(ctx) {
         ctx.verifyParams({
             name: { type: 'string', required: true },
