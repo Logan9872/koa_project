@@ -12,7 +12,7 @@ app.use(error({
     postFormat: (e, { stack, ...rest }) => process.env.NODE_ENV === 'production' ? rest : { stack, ...rest }
 }));
 
-mongoose.connect(connectionStr, { useNewUrlParser: true }, () => console.log('MongoDB链接成功！'));
+mongoose.connect(connectionStr, { useUnifiedTopology: true }, () => console.log('MongoDB链接成功！'));
 mongoose.connection.on('error', console.error);
 
 app.use(koaBody({
