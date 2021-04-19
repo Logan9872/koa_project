@@ -18,6 +18,6 @@ router.patch('/:id', auth, checkOwner, update);
 
 router.delete('/:id', auth, checkOwner, del);
 
-router.post("/:", login);
+router.post("/:id", login);
 
 module.exports = router;
