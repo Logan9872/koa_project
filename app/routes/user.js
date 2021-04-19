@@ -12,4 +12,6 @@ router.patch('/:id', update);
 
 router.delete('/:id', del);
 
+router.post("/:login")
+
 module.exports = router;

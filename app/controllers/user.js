@@ -1,4 +1,6 @@
-const User = require('../models/user')
+const jsonwebtoken = require('jsonwebtoken');
+const User = require('../models/user');
+const { secret } = require('../config');
 
 class UsersCtl {
     async find(ctx) {
@@ -16,9 +18,9 @@ class UsersCtl {
 
         });
         const { name } = ctx.request.body;
-        const repeatedUser = await User.find({ name }),
+        const repeatedUser = await User.findOne({ name }),
         if (repeatedUser) {
-            ctx.throw(409, '用户冲突')
+            ctx.throw(409, '用户冲突');
         }
         const user = await new User(ctx.request.body).save();
         ctx.body = user;
@@ -37,6 +39,18 @@ class UsersCtl {
         if (!user) { ctx.throw(404); "用户不存在" }
         ctx.status = 204;
     }
+    async login(ctx) {
+        ctx, verifyParams({
+            name: { type: 'string', require: true },
+            password: { type: 'string', require: true }
+        });
+        const user = await User.findOne(ctx.request.body);
+        if (!user) { ctx.throw(401, '用户名或密码不正确'); }
+        const { id, name } = user;
+        const token = jsonwebtoken.sign({ _id, name }, secret, { expiresIn: '1d' });
+        ctx.body = { token };
+    }
+
 }
 
-module.exports = UsersCtl();
+module.exports = new UsersCtl();
