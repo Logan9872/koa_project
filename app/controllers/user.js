@@ -7,7 +7,9 @@ class UsersCtl {
         ctx.body = await User.find();
     }
     async findById(ctx) {
-        const user = await User.findById(ctx.params.id);
+        const { fields } = ctx.query;
+        const selectFields = fields.split(';').filter(f => f).map(f => '+' + f).join('');
+        const user = await (await User.findById(ctx.params.id)).select(selectFields);
         if (!user) { ctx.throw(404, '用户不存在'); }
         ctx.body = user;
     }
@@ -33,8 +35,15 @@ class UsersCtl {
 
     async update(ctx) {
         ctx.verifyParams({
-            name: { type: 'string', required: true },
-            password: { type: 'string' },
+            name: { type: 'string', required: false },
+            password: { type: 'string', require: false },
+            avatar_url: { type: 'string', require: false },
+            gender: { type: 'string', require: false },
+            headline: { type: 'string', require: false },
+            locations: { type: "array", itemType: 'string', require: false },
+            business: { type: 'string', require: false },
+            employments: { type: 'array', itemType: 'object', require: false },
+            educations: { type: 'array', itemType: 'object', require: false },
         });
         const user = await User.findByIdAndUpdate(ctx.params.id, ctx.request.body);
         if (!user) { ctx.throw(404); "用户不存在" }
